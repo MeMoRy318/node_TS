@@ -43,6 +43,7 @@ app.post("/users", async (req: Request, res: Response): Promise<void> => {
   try {
     const body = req.body as IUser;
     if (!body) throw new Error("bed request");
+
     const person = await Person.create({ ...body });
     res.status(EHttpStatus.CREATED_201).json({ data: person });
   } catch (e) {
