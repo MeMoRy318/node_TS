@@ -42,6 +42,23 @@ class UserMiddleware {
     }
   }
 
+  public async findByEmailAndThrow(
+    req: Request,
+    res: Response,
+    next: NextFunction,
+  ): Promise<void> {
+    try {
+      const { email } = req.res.locals as IUser;
+      const user = await userRepository.getByEmail(email);
+      if (user) {
+        throw new ApiError("Conflict", EHttpStatus.CONFLICT_409);
+      }
+      next();
+    } catch (e) {
+      next(e);
+    }
+  }
+
   public async isBodyValid(
     req: Request,
     res: Response,
@@ -61,17 +78,19 @@ class UserMiddleware {
     }
   }
 
-  public async findByEmailAndThrow(
+  public async isUpdateBodyValid(
     req: Request,
     res: Response,
     next: NextFunction,
   ): Promise<void> {
     try {
-      const { email } = req.res.locals as IUser;
-      const user = await userRepository.getByEmail(email);
-      if (user) {
-        throw new ApiError("Conflict", EHttpStatus.CONFLICT_409);
+      const body = req.body;
+      const { value, error } = UserValidator.update.validate(body);
+
+      if (error) {
+        throw new ApiError("Person not Valid", EHttpStatus.BAD_REQUEST_400);
       }
+      req.res.locals = value;
       next();
     } catch (e) {
       next(e);

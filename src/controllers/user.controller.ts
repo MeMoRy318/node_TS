@@ -60,6 +60,21 @@ class UserController {
       next(e);
     }
   }
+  public async update(
+    req: Request,
+    res: Response,
+    next: NextFunction,
+  ): Promise<void> {
+    try {
+      const { id } = req.params;
+      const value = req.body as IUser;
+      const user = await userRepository.update(id, value);
+
+      res.status(EHttpStatus.CREATED_201).json({ data: user });
+    } catch (e) {
+      next(e);
+    }
+  }
 }
 
 const userController = new UserController();

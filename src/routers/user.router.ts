@@ -6,17 +6,24 @@ import { commonMiddleware, userMiddleware } from "../middlewares";
 const router = Router();
 
 router.get("", userMiddleware.getAll, userController.getAll);
+router.get(
+  "/:id",
+  commonMiddleware.isIdValid,
+  userMiddleware.getById,
+  userController.getById,
+);
 router.post(
   "",
   userMiddleware.isBodyValid,
   userMiddleware.findByEmailAndThrow,
   userController.create,
 );
-router.get(
+router.put(
   "/:id",
   commonMiddleware.isIdValid,
+  userMiddleware.isUpdateBodyValid,
   userMiddleware.getById,
-  userController.getById,
+  userController.update,
 );
 router.delete(
   "/:id",
