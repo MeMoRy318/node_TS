@@ -8,8 +8,8 @@ class CarRepository {
     const [cars] = await Promise.all([Car.find()]);
     return cars;
   }
-  public async getById(userId: string): Promise<ICar> {
-    const [car] = await Promise.all([Car.findById(userId)]);
+  public async getById(carId: string): Promise<ICar> {
+    const [car] = await Promise.all([Car.findById(carId)]);
     return car;
   }
   public async getByParams(params: FilterQuery<ICar>): Promise<ICar> {

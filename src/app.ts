@@ -14,7 +14,7 @@ app.use("/users", userRouter);
 app.use("/cars", carRouter);
 app.use((err: ApiError, req: Request, res: Response, next: NextFunction) => {
   const status = err.status || 500;
-  res.json(err.message).status(status);
+  res.status(status).json(err.message);
 });
 
 app.listen(configs.PORT, async () => {

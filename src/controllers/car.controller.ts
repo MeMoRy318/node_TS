@@ -1,16 +1,16 @@
 import { NextFunction, Request, Response } from "express";
 
-import { userRepository } from "../repositories";
+import { carRepository } from "../repositories";
 
-class UserController {
+class CarController {
   public async getAll(
     req: Request,
     res: Response,
     next: NextFunction,
   ): Promise<void> {
     try {
-      const users = req.res.locals;
-      res.status(200).json({ data: users });
+      const cars = req.res.locals;
+      res.status(200).json({ data: cars });
     } catch (e) {
       next(e);
     }
@@ -22,8 +22,8 @@ class UserController {
     next: NextFunction,
   ): Promise<void> {
     try {
-      const user = req.res.locals;
-      res.status(200).json({ data: user });
+      const car = req.res.locals;
+      res.status(200).json({ data: car });
     } catch (e) {
       next(e);
     }
@@ -35,13 +35,12 @@ class UserController {
     next: NextFunction,
   ): Promise<void> {
     try {
-      const user = await userRepository.create(req.body);
-      res.status(201).json({ data: user });
+      const car = await carRepository.create(req.body);
+      res.status(201).json({ data: car });
     } catch (e) {
       next(e);
     }
   }
-
   public async update(
     req: Request,
     res: Response,
@@ -49,9 +48,9 @@ class UserController {
   ): Promise<void> {
     try {
       const body = req.body;
-      const { userId } = req.params;
-      const user = await userRepository.update(userId, body);
-      res.status(201).json({ data: user });
+      const { carId } = req.params;
+      const car = await carRepository.update(carId, body);
+      res.status(201).json({ data: car });
     } catch (e) {
       next(e);
     }
@@ -63,8 +62,8 @@ class UserController {
     next: NextFunction,
   ): Promise<void> {
     try {
-      const { userId } = req.params;
-      await userRepository.delete(userId);
+      const { carId } = req.params;
+      await carRepository.delete(carId);
       res.sendStatus(204);
     } catch (e) {
       next(e);
@@ -72,6 +71,6 @@ class UserController {
   }
 }
 
-const userController = new UserController();
+const carController = new CarController();
 
-export { userController };
+export { carController };

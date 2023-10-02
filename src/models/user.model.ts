@@ -14,7 +14,7 @@ const schema = new Schema(
       max: 99,
       required: true,
     },
-    gender: {
+    genders: {
       type: String,
       required: true,
     },

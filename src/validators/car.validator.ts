@@ -1,9 +1,11 @@
 import joi from "joi";
 
+import { EProducer } from "../enums";
+
 class CarValidator {
-  static model = joi.string().trim().min(3).max(25);
+  static model = joi.string().trim().min(1).max(25);
   static year = joi.number().min(2000).max(new Date().getFullYear());
-  static producer = joi.string().trim().valid(["audi", "bmw", "opel"]);
+  static producer = joi.valid(...Object.values(EProducer));
 
   static create = joi.object({
     producer: this.producer.required(),

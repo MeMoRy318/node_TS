@@ -1,6 +1,6 @@
 import { FilterQuery } from "mongoose";
 
-import { carRepository } from "../repositories/car.repository";
+import { carRepository } from "../repositories";
 import { ICar } from "../types";
 
 class CarService {

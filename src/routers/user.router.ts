@@ -13,6 +13,23 @@ router.get(
   userMiddleware.getByIdOrThrow,
   userController.getById,
 );
-router.post("", commonMiddleware.isBodyValid(UserValidator.create));
-
+router.post(
+  "",
+  commonMiddleware.isBodyValid(UserValidator.create),
+  userMiddleware.getByParamsAndThrow,
+  userController.create,
+);
+router.put(
+  "/:userId",
+  commonMiddleware.isIdValid("userId"),
+  commonMiddleware.isBodyValid(UserValidator.update),
+  userMiddleware.getByIdOrThrow,
+  userController.update,
+);
+router.delete(
+  "/:userId",
+  commonMiddleware.isIdValid("userId"),
+  userMiddleware.getByIdOrThrow,
+  userController.delete,
+);
 export { router as userRouter };
