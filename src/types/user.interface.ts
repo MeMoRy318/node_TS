@@ -8,4 +8,6 @@ interface IUser extends Document {
   password: string;
 }
 
-export type { IUser };
+type IUserCredentials = Pick<IUser, "password" | "email">;
+
+export type { IUser, IUserCredentials };

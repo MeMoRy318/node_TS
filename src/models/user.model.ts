@@ -1,10 +1,11 @@
 import { model, Schema } from "mongoose";
 
+import { IUser } from "../types";
+
 const schema = new Schema(
   {
     name: {
       type: String,
-      required: true,
       min: 3,
       max: 25,
     },
@@ -12,11 +13,9 @@ const schema = new Schema(
       type: Number,
       min: 16,
       max: 99,
-      required: true,
     },
     genders: {
       type: String,
-      required: true,
     },
     email: {
       type: String,
@@ -31,6 +30,6 @@ const schema = new Schema(
   { versionKey: false, timestamps: true },
 );
 
-const Person = model("person", schema);
+const Person = model<IUser>("person", schema);
 
 export { Person };
