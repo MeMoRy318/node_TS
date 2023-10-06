@@ -18,5 +18,10 @@ router.post(
   authMiddleware.passwordVerification,
   authController.login,
 );
+router.post(
+  "/refresh",
+  authMiddleware.checkRefreshToken,
+  authController.refresh,
+);
 
 export { router as authRouter };

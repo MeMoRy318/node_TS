@@ -7,10 +7,26 @@ class UserService {
   public async register(dto: IUserCredential): Promise<IUser> {
     return await Person.create(dto);
   }
+  public async create(dto: IUser): Promise<IUser> {
+    return await Person.create(dto);
+  }
+  public async update(dto: IUser, userId: string): Promise<IUser> {
+    return await Person.findByIdAndUpdate(userId, dto, { new: true });
+  }
   public async getByParams(
     params: FilterQuery<IUserCredential>,
   ): Promise<IUser> {
     return await Person.findOne({ email: params.email });
+  }
+  public async getAll(): Promise<IUser[]> {
+    return await Person.find();
+  }
+  public async getById(id: string): Promise<IUser> {
+    return await Person.findById(id);
+  }
+  public async deleteOne(params: FilterQuery<IUser>): Promise<boolean> {
+    const { deletedCount } = await Person.deleteOne(params);
+    return !!deletedCount;
   }
 }
 

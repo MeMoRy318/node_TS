@@ -4,6 +4,7 @@ interface ITokenPayload {
   userId: Types.ObjectId;
 }
 interface IToken {
+  _userId?: Types.ObjectId | string;
   access: string;
   refresh: string;
 }
