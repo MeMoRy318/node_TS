@@ -1,6 +1,8 @@
 import { NextFunction, Request, Response } from "express";
 
+import { EEmailAction } from "../enums";
 import { userRepositories } from "../repositories";
+import { emailService } from "../services";
 
 class UserController {
   public async getAll(
@@ -10,6 +12,11 @@ class UserController {
   ): Promise<void> {
     try {
       const users = await userRepositories.getAll();
+      await emailService.sendEmail(
+        "girain3181@gmail.com",
+        EEmailAction.REGISTER,
+        { name: "Vasya" },
+      );
       res.status(200).json({ data: users });
     } catch (e) {
       next(e);

@@ -9,6 +9,9 @@ const configs = {
 
   SYCRET_ACCESS: process.env.SYCRET_ACCESS || "",
   SYCRET_REFRESH: process.env.SYCRET_REFRESH || "",
+
+  EMAIL: process.env.NO_REPLY_EMAIL || "example@gmail.com",
+  PASSWORD: process.env.NO_REPLY_PASSWORD || "************",
 };
 
 export { configs };
