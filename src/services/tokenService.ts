@@ -38,6 +38,9 @@ class TokenService {
   public async delete(dto: FilterQuery<IToken>): Promise<void> {
     await Token.deleteOne(dto);
   }
+  public async deleteAllById(id: string): Promise<void> {
+    await Token.deleteOne({ _userId: id });
+  }
 }
 
 const tokenService = new TokenService();
