@@ -39,7 +39,7 @@ class TokenService {
     await Token.deleteOne(dto);
   }
   public async deleteAllById(id: string): Promise<void> {
-    await Token.deleteOne({ _userId: id });
+    await Token.deleteMany({ _userId: id });
   }
 }
 

@@ -1,7 +1,7 @@
 import { Types } from "mongoose";
 
 interface ITokenPayload {
-  userId: Types.ObjectId;
+  userId: string;
 }
 interface IToken {
   _userId?: Types.ObjectId | string;

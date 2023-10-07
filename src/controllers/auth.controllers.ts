@@ -1,5 +1,6 @@
 import { NextFunction, Request, Response } from "express";
 
+import { tokenRepository } from "../repositories";
 import { authService } from "../services";
 import { ITokenPayload, IUser } from "../types";
 
@@ -39,6 +40,32 @@ class AuthControllers {
       const refresh = req.res.locals.refreshToken;
       const tokenPair = await authService.refresh({ userId }, refresh);
       res.status(201).json({ data: tokenPair });
+    } catch (e) {
+      next(e);
+    }
+  }
+  public async logout(
+    req: Request,
+    res: Response,
+    next: NextFunction,
+  ): Promise<void> {
+    try {
+      const access = req.res.locals.accessToken;
+      await tokenRepository.deleteOne({ access });
+      res.sendStatus(204);
+    } catch (e) {
+      next(e);
+    }
+  }
+  public async logoutAll(
+    req: Request,
+    res: Response,
+    next: NextFunction,
+  ): Promise<void> {
+    try {
+      const { userId } = req.res.locals.tokenPayload as ITokenPayload;
+      await tokenRepository.deleteAllById(userId);
+      res.sendStatus(204);
     } catch (e) {
       next(e);
     }
