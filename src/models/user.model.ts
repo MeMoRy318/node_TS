@@ -26,6 +26,10 @@ const userSchema = new Schema(
       type: String,
       required: true,
     },
+    status: {
+      type: String,
+      default: "inactive",
+    },
   },
   { versionKey: false, timestamps: true },
 );

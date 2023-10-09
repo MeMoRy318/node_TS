@@ -1,9 +1,13 @@
 import { NextFunction, Request, Response } from "express";
 
 import { ApiError } from "../errors";
-import { tokenRepository, userRepositories } from "../repositories";
+import {
+  actionTokenRepository,
+  tokenRepository,
+  userRepositories,
+} from "../repositories";
 import { passwordService, tokenService } from "../services";
-import { IUser, IUserCredential } from "../types";
+import { ITokenType, IUser, IUserCredential } from "../types";
 
 class AuthMiddleware {
   public async checkAccessToken(
@@ -105,6 +109,23 @@ class AuthMiddleware {
     } catch (e) {
       next(e);
     }
+  }
+  public checkToken(tokenType: ITokenType) {
+    return async (req: Request, res: Response, next: NextFunction) => {
+      try {
+        const token = req.query[tokenType] as string;
+        const payload = tokenService.verifyToken(token, tokenType);
+        const entity = await actionTokenRepository.findOne({ token });
+        if (!entity) {
+          throw new ApiError("Token not valid!", 401);
+        }
+        req.res.locals.payload = payload;
+        req.res.locals[tokenType] = token;
+        next();
+      } catch (e) {
+        next(e);
+      }
+    };
   }
 }
 

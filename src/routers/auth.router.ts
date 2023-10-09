@@ -23,5 +23,10 @@ router.post(
   authMiddleware.checkRefreshToken,
   authController.refresh,
 );
+router.post(
+  "/activate",
+  authMiddleware.checkToken("activate"),
+  authController.activate,
+);
 
 export { router as authRouter };

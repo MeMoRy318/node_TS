@@ -43,6 +43,19 @@ class AuthControllers {
       next(e);
     }
   }
+  public async activate(
+    req: Request,
+    res: Response,
+    next: NextFunction,
+  ): Promise<void> {
+    try {
+      const { userId } = req.res.locals.payload as ITokenPayload;
+      const user = await authService.activate(userId);
+      res.status(200).json({ data: user });
+    } catch (e) {
+      next(e);
+    }
+  }
 }
 
 const authController = new AuthControllers();
