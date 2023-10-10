@@ -1,11 +1,33 @@
 import { NextFunction, Request, Response } from "express";
 
 import { ApiError } from "../errors";
-import { tokenRepository, userRepositories } from "../repositories";
+import { actionTokenRepository, tokenRepository } from "../repositories";
 import { passwordService, tokenService } from "../services";
-import { IUser, IUserCredential } from "../types";
+import { ITokenType, IUser, IUserCredential } from "../types";
 
 class AuthMiddleware {
+  public checkActionToken(tokenType: ITokenType) {
+    return async (req: Request, res: Response, next: NextFunction) => {
+      try {
+        const token = req.query[tokenType] as string;
+        if (!token) {
+          throw new ApiError("No Token!", 401);
+        }
+        const payload = tokenService.verifyToken(token, tokenType);
+
+        const entity = await actionTokenRepository.findOne({ token });
+
+        if (!entity) {
+          throw new ApiError("Token not valid!", 401);
+        }
+        req.res.locals.payload = payload;
+        req.res.locals[tokenType] = token;
+        next();
+      } catch (e) {
+        next(e);
+      }
+    };
+  }
   public async checkAccessToken(
     req: Request,
     res: Response,
@@ -58,37 +80,7 @@ class AuthMiddleware {
       next(e);
     }
   }
-  public async getByParamsAndThrow(
-    req: Request,
-    res: Response,
-    next: NextFunction,
-  ): Promise<void> {
-    try {
-      const user = await userRepositories.getByParams(req.body);
-      if (user) {
-        throw new ApiError("Invalid credentials provided", 401);
-      }
-      next();
-    } catch (e) {
-      next(e);
-    }
-  }
-  public async getByParamsOrThrow(
-    req: Request,
-    res: Response,
-    next: NextFunction,
-  ): Promise<void> {
-    try {
-      const user = await userRepositories.getByParams(req.body);
-      if (!user) {
-        throw new ApiError("Invalid credentials provided", 401);
-      }
-      req.res.locals = user;
-      next();
-    } catch (e) {
-      next(e);
-    }
-  }
+
   public async passwordVerification(
     req: Request,
     res: Response,

@@ -10,7 +10,7 @@ class UserRepository {
   public async create(dto: IUser): Promise<IUser> {
     return await userService.create(dto);
   }
-  public async update(dto: IUser, userId: string): Promise<IUser> {
+  public async update(dto: FilterQuery<IUser>, userId: string): Promise<IUser> {
     return await userService.update(dto, userId);
   }
   public async getByParams(

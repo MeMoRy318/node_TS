@@ -30,6 +30,13 @@ class UserValidator {
     gender: this.gender,
     age: this.age,
   });
+
+  static forgot = joi.object({
+    email: this.email.required(),
+  });
+  static forgot_password = joi.object({
+    password: this.password.required(),
+  });
 }
 
 export { UserValidator };

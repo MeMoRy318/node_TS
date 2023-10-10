@@ -1,26 +1,19 @@
 import { JwtPayload, sign, verify } from "jsonwebtoken";
-import { FilterQuery } from "mongoose";
 
 import { configs } from "../configs";
 import { ApiError } from "../errors";
-import { Token } from "../models";
-import { IToken, ITokenPayload } from "../types";
-
-type ITokenType = "refresh" | "access";
+import { ITokenPayload, ITokenType } from "../types";
 
 class TokenService {
-  public generateTokenPair(payload: ITokenPayload): IToken {
-    const access = sign(payload, configs.SYCRET_ACCESS, { expiresIn: "1d" });
-    const refresh = sign(payload, configs.SYCRET_REFRESH, { expiresIn: "30d" });
-    return { access, refresh };
-  }
-  public verifyToken(token: string, type: ITokenType): string | JwtPayload {
+  public generateToken(payload: ITokenPayload, type: ITokenType): string {
     try {
       switch (type) {
+        case "forgot":
+          return sign(payload, configs.SYCRET_FORGOT, { expiresIn: "1d" });
         case "access":
-          return verify(token, configs.SYCRET_ACCESS);
+          return sign(payload, configs.SYCRET_ACCESS, { expiresIn: "1d" });
         case "refresh":
-          return verify(token, configs.SYCRET_REFRESH);
+          return sign(payload, configs.SYCRET_REFRESH, { expiresIn: "30d" });
         default:
           throw new ApiError("Token not valid!", 401);
       }
@@ -29,14 +22,21 @@ class TokenService {
     }
   }
 
-  public async create(dto: IToken): Promise<IToken> {
-    return await Token.create(dto);
-  }
-  public async findOne(dto: FilterQuery<IToken>): Promise<IToken> {
-    return await Token.findOne(dto);
-  }
-  public async delete(dto: FilterQuery<IToken>): Promise<void> {
-    await Token.deleteOne(dto);
+  public verifyToken(token: string, type: ITokenType): string | JwtPayload {
+    try {
+      switch (type) {
+        case "access":
+          return verify(token, configs.SYCRET_ACCESS);
+        case "refresh":
+          return verify(token, configs.SYCRET_REFRESH);
+        case "forgot":
+          return verify(token, configs.SYCRET_FORGOT);
+        default:
+          throw new ApiError("Token not valid!", 401);
+      }
+    } catch (e) {
+      throw new ApiError("Token not valid!", 401);
+    }
   }
 }
 

@@ -1,6 +1,7 @@
 import { NextFunction, Request, Response } from "express";
 
-import { authService } from "../services";
+import { EEmail } from "../enums";
+import { authService, emailService } from "../services";
 import { ITokenPayload, IUser } from "../types";
 
 class AuthControllers {
@@ -11,6 +12,13 @@ class AuthControllers {
   ): Promise<void> {
     try {
       const user = await authService.register(req.body);
+      await emailService.sendEmail(
+        "girain3181@gmail.com",
+        EEmail.FORGOT_PASSWORD,
+        {
+          name: "Pumpkin",
+        },
+      );
       res.status(201).json({ data: user });
     } catch (e) {
       next(e);
@@ -39,6 +47,35 @@ class AuthControllers {
       const refresh = req.res.locals.refreshToken;
       const tokenPair = await authService.refresh({ userId }, refresh);
       res.status(201).json({ data: tokenPair });
+    } catch (e) {
+      next(e);
+    }
+  }
+  public async forgot(
+    req: Request,
+    res: Response,
+    next: NextFunction,
+  ): Promise<void> {
+    try {
+      const user = req.res.locals as IUser;
+      await authService.forgot(user);
+      res.sendStatus(204);
+    } catch (e) {
+      next(e);
+    }
+  }
+
+  public async forgotPassword(
+    req: Request,
+    res: Response,
+    next: NextFunction,
+  ): Promise<void> {
+    try {
+      const payload = req.res.locals.payload as ITokenPayload;
+      const { password } = req.body as { password: string };
+      await authService.forgotPassword(payload, password);
+
+      res.sendStatus(204);
     } catch (e) {
       next(e);
     }

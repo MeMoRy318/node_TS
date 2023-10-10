@@ -1,7 +1,7 @@
 import { Types } from "mongoose";
 
 interface ITokenPayload {
-  userId: Types.ObjectId;
+  userId: string;
 }
 interface IToken {
   _userId?: Types.ObjectId | string;
@@ -9,4 +9,12 @@ interface IToken {
   refresh: string;
 }
 
-export type { ITokenPayload, IToken };
+type ITokenType = "refresh" | "access" | "forgot";
+
+interface IActionToken {
+  _userId?: Types.ObjectId | string;
+  type: ITokenType;
+  token: string;
+}
+
+export type { ITokenPayload, IToken, ITokenType, IActionToken };
