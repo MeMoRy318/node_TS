@@ -2,7 +2,7 @@ import express, { NextFunction, Request, Response, urlencoded } from "express";
 import * as mongoose from "mongoose";
 
 import { configs } from "./configs";
-import { cronRunner } from "./crons";
+// import { cronRunner } from "./crons";
 import { ApiError } from "./errors";
 import { authRouter, userRouter } from "./routers";
 
@@ -17,7 +17,7 @@ app.use("/auth", authRouter);
 app.listen(configs.PORT, async () => {
   await mongoose.connect(configs.DB_URL);
   console.log(`Server has successfully started on PORT ${configs.PORT}`);
-  cronRunner();
+  // cronRunner();
 });
 
 app.use("*", (req: Request, res: Response) => {
