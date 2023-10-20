@@ -1,11 +1,20 @@
 import { FilterQuery } from "mongoose";
 
-import { IUser } from "../interfaces";
+import { IPaginationResponse, IQuery, IUser } from "../interfaces";
 import { userRepository } from "../repositories";
 
 class UserService {
-  public async getAll(): Promise<IUser[]> {
-    return await userRepository.getAll();
+  public async getAll(query: IQuery): Promise<IPaginationResponse<IUser>> {
+    const { page, limit, sortedBy, ...searchParams } = query;
+    const skip = +limit * (+page - 1);
+
+    return await userRepository.getAll(
+      skip,
+      +limit,
+      +page,
+      sortedBy,
+      searchParams,
+    );
   }
 
   public async updateUser(dto: Partial<IUser>, userId: string): Promise<IUser> {

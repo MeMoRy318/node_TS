@@ -2,7 +2,7 @@ import { config } from "dotenv";
 
 config();
 const configs = {
-  PORT: 5000,
+  PORT: 5200,
   DB_URL: process.env.DB_URL || "https://example.com",
 
   SECRET_SALT: 10,

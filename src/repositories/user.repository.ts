@@ -2,12 +2,25 @@ import dayjs from "dayjs";
 import { FilterQuery } from "mongoose";
 
 import { EUserStatus } from "../enums";
-import { IUser, IUserCredentials } from "../interfaces";
+import { IPaginationResponse, IUser, IUserCredentials } from "../interfaces";
 import { Person } from "../models";
 
 class UserRepository {
-  public async getAll(): Promise<IUser[]> {
-    return await Person.find();
+  public async getAll(
+    skip: number,
+    limit: number,
+    page: number,
+    sortedBy: string,
+    searchParams: { [key: string]: string },
+  ): Promise<IPaginationResponse<IUser>> {
+    const [data, itemsFound] = await Promise.all([
+      Person.find(searchParams).skip(skip).limit(limit).sort(sortedBy),
+      Person.count(searchParams),
+    ]);
+
+    const totalPage = Math.ceil(itemsFound / limit);
+
+    return { page, totalPage, limit, itemsFound, data };
   }
 
   public async getOneByParams(params: FilterQuery<IUser>): Promise<IUser> {
