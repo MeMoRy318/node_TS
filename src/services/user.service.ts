@@ -1,8 +1,10 @@
+import { UploadedFile } from "express-fileupload";
 import { FilterQuery } from "mongoose";
 
+import { EFile } from "../enums";
 import { IPaginationResponse, IQuery, IUser } from "../interfaces";
-
 import { userRepository } from "../repositories";
+import { s3Service } from "./s3.Service";
 
 class UserService {
   public async getAll(query: IQuery): Promise<IPaginationResponse<IUser>> {
@@ -26,6 +28,15 @@ class UserService {
   }
   public async getOneByParams(params: FilterQuery<IUser>): Promise<IUser> {
     return await userRepository.getOneByParams(params);
+  }
+
+  public async uploadAvatar(
+    file: UploadedFile,
+    userId: string,
+    fileType: EFile,
+  ): Promise<IUser> {
+    const filePath = await s3Service.uploadFile(file, userId, fileType);
+    return await userRepository.updateOneById(userId, { avatar: filePath });
   }
 }
 

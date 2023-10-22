@@ -31,6 +31,9 @@ const personSchema = new Schema(
       required: true,
       // select: false,
     },
+    avatar: {
+      type: String,
+    },
   },
   { versionKey: false, timestamps: true },
 );
