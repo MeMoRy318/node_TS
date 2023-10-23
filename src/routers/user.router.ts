@@ -2,7 +2,7 @@ import { Router } from "express";
 
 import { userController } from "../controllers";
 import { IUser } from "../interfaces";
-import { commonMiddleware, userMiddleware } from "../middlewares";
+import { commonMiddleware, fileMiddleware, userMiddleware } from "../middlewares";
 import { UserValidator } from "../validators";
 
 const router = Router();
@@ -20,5 +20,11 @@ router.post(
   userMiddleware.getByParamsAndThrow<IUser>("email"),
   userController.create,
 );
-
+router.post(
+  "/:userId/avatar",
+  commonMiddleware.isIdValid("userId"),
+  fileMiddleware.uploadAvatar,
+  userMiddleware.getByIdOrThrow,
+  userController.updateAvatar,
+);
 export { router as userRouter };

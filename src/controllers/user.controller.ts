@@ -1,4 +1,5 @@
 import { NextFunction, Request, Response } from "express";
+import { UploadedFile } from "express-fileupload";
 
 import { IQuery, IUser } from "../interfaces";
 import { userService } from "../services";
@@ -67,6 +68,22 @@ class UserController {
     try {
       const user = await userService.createUser(req.body);
       res.status(201).json({ data: user });
+    } catch (e) {
+      next(e);
+    }
+  }
+
+  public async updateAvatar(
+    req: Request,
+    res: Response,
+    next: NextFunction,
+  ): Promise<void> {
+    try {
+      const { userId } = req.params;
+      const file = req.files.avatar as UploadedFile;
+
+      const user = await userService.updateAvatar(file, userId);
+      res.status(200).json({ data: user });
     } catch (e) {
       next(e);
     }
