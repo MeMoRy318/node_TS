@@ -9,6 +9,7 @@ interface IUser extends Document {
   age: number;
   email: string;
   password: string;
+  avatar: null | string;
 }
 
 interface ISetNewPassword {

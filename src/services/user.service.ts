@@ -1,7 +1,6 @@
 import { FilterQuery } from "mongoose";
 
 import { IPaginationResponse, IQuery, IUser } from "../interfaces";
-
 import { userRepository } from "../repositories";
 
 class UserService {

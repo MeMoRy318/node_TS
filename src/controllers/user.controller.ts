@@ -1,7 +1,9 @@
 import { NextFunction, Request, Response } from "express";
+import { UploadedFile } from "express-fileupload";
 
+import { EFileType } from "../enums";
 import { IQuery, IUser } from "../interfaces";
-import { userService } from "../services";
+import { s3Service, userService } from "../services";
 
 class UserController {
   public async getAll(
@@ -67,6 +69,27 @@ class UserController {
     try {
       const user = await userService.createUser(req.body);
       res.status(201).json({ data: user });
+    } catch (e) {
+      next(e);
+    }
+  }
+  public async uploadAvatar(
+    req: Request,
+    res: Response,
+    next: NextFunction,
+  ): Promise<void> {
+    try {
+      const file = req.files.avatar as UploadedFile;
+      const { userId } = req.params;
+      const filePath = await s3Service.uploadFile(
+        file,
+        EFileType.USERS,
+        userId,
+      );
+      await s3Service.deleteFile(
+        "users/652fbd3c7b8b12bf3a3337f9/e3ad9a72-d73b-4dfd-badc-a55b16adf81d.jpg",
+      );
+      res.status(200).json(filePath);
     } catch (e) {
       next(e);
     }
