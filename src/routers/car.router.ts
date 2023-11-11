@@ -14,6 +14,7 @@ router.post(
   "",
   commonMiddleware.isBodyValid(CarValidator.create),
   authMiddleware.checkAccessToken,
+  carMiddleware.countCar,
   carController.create,
 );
 

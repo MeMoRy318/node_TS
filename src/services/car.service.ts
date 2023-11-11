@@ -1,9 +1,12 @@
-import { ICar } from "../interfaces";
-import { carRepository } from "../repositories";
+import { ICar, IUser } from "../interfaces";
+import { carRepository, userRepository } from "../repositories";
 
 class CarService {
-  public async create(data: ICar, userId: string): Promise<ICar> {
-    return await carRepository.create(data, userId);
+  public async create(data: ICar, user: IUser): Promise<ICar> {
+    if (user.status === "buyer") {
+      await userRepository.update({ status: "seller" }, String(user._id));
+    }
+    return await carRepository.create(data, String(user._id));
   }
 
   public async getAll(): Promise<ICar[]> {
@@ -23,6 +26,10 @@ class CarService {
   }
   public async getByParams(carId: string, userId: string): Promise<ICar> {
     return await carRepository.getByParams(carId, userId);
+  }
+
+  public async getCountCarById(userId: string): Promise<number> {
+    return await carRepository.getCountCarById(userId);
   }
 }
 

@@ -6,6 +6,7 @@ interface IUser {
   _id?: Types.ObjectId | IUser | string;
   name: string;
   phone: string;
+  premium: boolean;
   status: EUserStatus;
   email: string;
   password: string;

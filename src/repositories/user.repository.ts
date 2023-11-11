@@ -10,7 +10,7 @@ class UserRepository {
   public async getOneByParams(params: FilterQuery<IUser>): Promise<IUser> {
     return await Person.findOne(params);
   }
-  public async update(dto: IUser, userId: string): Promise<IUser> {
+  public async update(dto: FilterQuery<IUser>, userId: string): Promise<IUser> {
     return await Person.findByIdAndUpdate(userId, dto, {
       returnDocument: "after",
     });

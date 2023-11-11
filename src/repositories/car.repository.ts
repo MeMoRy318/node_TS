@@ -27,6 +27,9 @@ class CarRepository {
   public async getByParams(carId: string, userId: string): Promise<ICar> {
     return await Car.findOne({ _id: carId, _userId: userId });
   }
+  public async getCountCarById(userId: string): Promise<number> {
+    return await Car.count({ _userId: userId });
+  }
 }
 
 const carRepository = new CarRepository();

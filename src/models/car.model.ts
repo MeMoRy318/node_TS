@@ -22,6 +22,10 @@ const schema = new Schema(
       required: true,
       ref: Person,
     },
+    status: {
+      type: String,
+      default: "inactive",
+    },
   },
   { versionKey: false, timestamps: true },
 );

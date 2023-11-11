@@ -51,6 +51,27 @@ class CarMiddleware {
       next(e);
     }
   }
+
+  public async countCar(
+    req: Request,
+    res: Response,
+    next: NextFunction,
+  ): Promise<void> {
+    try {
+      const { _id, premium } = req.res.locals.user as IUser;
+
+      if (!premium) {
+        const countCars = await carService.getCountCarById(String(_id));
+        if (countCars >= 1) {
+          throw new ApiError("one ad can be added without a premium", 403);
+        }
+      }
+
+      next();
+    } catch (e) {
+      next(e);
+    }
+  }
 }
 
 const carMiddleware = new CarMiddleware();

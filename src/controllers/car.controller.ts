@@ -1,6 +1,6 @@
 import { NextFunction, Request, Response } from "express";
 
-import { ICar, ITokenPayload } from "../interfaces";
+import { ICar, IUser } from "../interfaces";
 import { carService } from "../services";
 
 class CarController {
@@ -11,8 +11,9 @@ class CarController {
   ): Promise<void> {
     try {
       const body = req.body as ICar;
-      const { _userId } = req.res.locals.tokenPayload as ITokenPayload;
-      const car = await carService.create(body, String(_userId));
+      const user = req.res.locals.user as IUser;
+
+      const car = await carService.create(body, user);
       res.status(201).json({ data: car });
     } catch (e) {
       next(e);

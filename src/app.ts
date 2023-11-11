@@ -3,7 +3,13 @@ import * as mongoose from "mongoose";
 
 import { configs } from "./configs";
 import { ApiError } from "./errors";
-import { adminRouter, authRouter, carRouter, userRouter } from "./routers";
+import {
+  adminRouter,
+  authRouter,
+  carRouter,
+  managerRouter,
+  userRouter,
+} from "./routers";
 
 const app = express();
 
@@ -14,6 +20,7 @@ app.use("/auth", authRouter);
 app.use("/cars", carRouter);
 app.use("/users", userRouter);
 app.use("/admin", adminRouter);
+app.use("/manager", managerRouter);
 
 app.listen(configs.PORT, async () => {
   await mongoose.connect(configs.DB_URL);
