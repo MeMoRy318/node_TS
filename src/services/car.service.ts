@@ -6,6 +6,7 @@ class CarService {
     if (user.status === "buyer") {
       await userRepository.update({ status: "seller" }, String(user._id));
     }
+
     return await carRepository.create(data, String(user._id));
   }
 

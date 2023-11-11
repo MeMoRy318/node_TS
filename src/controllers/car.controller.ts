@@ -1,6 +1,7 @@
 import { NextFunction, Request, Response } from "express";
 
 import { ICar, IUser } from "../interfaces";
+import { carPresenter } from "../presenters";
 import { carService } from "../services";
 
 class CarController {
@@ -14,7 +15,7 @@ class CarController {
       const user = req.res.locals.user as IUser;
 
       const car = await carService.create(body, user);
-      res.status(201).json({ data: car });
+      res.status(201).json({ data: await carPresenter.present(car) });
     } catch (e) {
       next(e);
     }

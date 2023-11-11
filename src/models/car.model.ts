@@ -8,20 +8,28 @@ const schema = new Schema(
     model: {
       type: String,
     },
+
     year: {
       type: String,
     },
+
     producer: {
       type: String,
     },
+
     price: {
       type: Number,
     },
+    currency: {
+      type: String,
+    },
+
     _userId: {
       type: Types.ObjectId,
       required: true,
       ref: Person,
     },
+
     status: {
       type: String,
       default: "inactive",
