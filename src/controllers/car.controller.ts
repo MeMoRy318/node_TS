@@ -40,7 +40,7 @@ class CarController {
   ): Promise<void> {
     try {
       const car = req.res.locals.car as ICar;
-      res.status(200).json({ data: car });
+      res.status(200).json({ data: await carPresenter.present(car) });
     } catch (e) {
       next(e);
     }
@@ -69,7 +69,7 @@ class CarController {
       const body = req.body;
 
       const car = await carService.update(body, carId);
-      res.status(201).json({ data: car });
+      res.status(201).json({ data: await carPresenter.present(car) });
     } catch (e) {
       next(e);
     }

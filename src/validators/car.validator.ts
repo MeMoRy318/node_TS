@@ -22,6 +22,7 @@ class CarValidator {
     year: this.year,
     producer: this.producer,
     price: this.price,
+    currency: this.currency,
   });
 }
 
