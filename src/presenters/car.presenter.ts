@@ -1,5 +1,7 @@
+import { configs } from "../configs";
 import { ECurrency } from "../enums";
 import { ICar } from "../interfaces";
+import { interMediaSetter } from "../payload";
 import { privateBankService } from "../services";
 
 class CarPresenter {
@@ -20,7 +22,27 @@ class CarPresenter {
       _id: data._id,
       _userId: data._userId,
       model: data.model,
+      photo: data.photo ? configs.AWS_S3_BUKET_URL + data.photo : null,
     };
+  }
+  public async presents(data: ICar[]): Promise<Partial<ICar[]>> {
+    const users: Partial<ICar[]> = [];
+
+    for (const item of data) {
+      // @ts-ignore
+      users.push({
+        currency: item.currency,
+        _id: item._id,
+        _userId: item._userId,
+        model: item.model,
+        price: item.price,
+        year: item.year,
+        producer: item.producer,
+        photo: item.photo ? configs.AWS_S3_BUKET_URL + item.photo : null,
+      });
+      await interMediaSetter.setInterMedia();
+    }
+    return users;
   }
 }
 

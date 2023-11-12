@@ -8,6 +8,7 @@ import {
   managerMiddleware,
   userMiddleware,
 } from "../middlewares";
+import { fileMiddleware } from "../middlewares/file.middleware";
 import { UserValidator } from "../validators";
 
 const router = Router();
@@ -43,6 +44,19 @@ router.put(
   managerMiddleware.isAdminOrManager,
   userMiddleware.getByIdOrThrow,
   userController.update,
+);
+
+router.patch(
+  "/avatar",
+  fileMiddleware.uploadAvatar,
+  authMiddleware.checkAccessToken,
+  userController.updateAvatar,
+);
+router.patch(
+  "/premium",
+  authMiddleware.checkAccessToken,
+  userMiddleware.isPremiumAndThrow,
+  userController.premium,
 );
 
 router.delete(

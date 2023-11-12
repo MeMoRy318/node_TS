@@ -11,6 +11,7 @@ interface ICar extends Document {
   year: number;
   producer: string;
   price: number;
+  photo: string;
 }
 
 export type { ICar };

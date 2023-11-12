@@ -37,6 +37,7 @@ const personSchema = new Schema(
 
     avatar: {
       type: String,
+      default: null,
     },
   },
   { versionKey: false, timestamps: true },

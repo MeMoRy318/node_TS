@@ -1,4 +1,6 @@
-import { ICar } from "../interfaces";
+import { FilterQuery } from "mongoose";
+
+import { ICar, IPaginationResponse, IQuery } from "../interfaces";
 import { Car } from "../models";
 
 class CarRepository {
@@ -6,8 +8,14 @@ class CarRepository {
     return await Car.create({ ...data, _userId });
   }
 
-  public async getAll(): Promise<ICar[]> {
-    return await Car.find();
+  public async getAll(query: IQuery): Promise<IPaginationResponse<ICar>> {
+    const { page = 1, limit = 5, sortedBy, ...searchObj } = query;
+    const skip = +limit * (+page - 1);
+    const [data, itemsFound] = await Promise.all([
+      Car.find(searchObj).skip(+skip).limit(+limit).sort(sortedBy),
+      Car.count(searchObj),
+    ]);
+    return { page, limit, itemsFound, data };
   }
 
   public async delete(carId: string): Promise<boolean> {
@@ -15,7 +23,7 @@ class CarRepository {
     return !!deletedCount;
   }
 
-  public async update(data: ICar, carId: string): Promise<ICar> {
+  public async update(data: FilterQuery<ICar>, carId: string): Promise<ICar> {
     return await Car.findOneAndUpdate({ _id: carId }, data, {
       returnDocument: "after",
     }).lean();

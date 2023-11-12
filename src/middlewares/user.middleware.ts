@@ -1,6 +1,7 @@
 import { NextFunction, Request, Response } from "express";
 
 import { ApiError } from "../errors";
+import { IUser } from "../interfaces";
 import { userService } from "../services";
 
 class UserMiddleware {
@@ -53,6 +54,21 @@ class UserMiddleware {
         throw new ApiError("Invalid credentials provided", 401);
       }
       req.res.locals.user = user;
+      next();
+    } catch (e) {
+      next(e);
+    }
+  }
+  public async isPremiumAndThrow(
+    req: Request,
+    res: Response,
+    next: NextFunction,
+  ): Promise<void> {
+    try {
+      const body = req.res.locals.user as IUser;
+      if (body.premium) {
+        throw new ApiError("you already have a premium account", 400);
+      }
       next();
     } catch (e) {
       next(e);

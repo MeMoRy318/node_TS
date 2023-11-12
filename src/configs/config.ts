@@ -21,9 +21,9 @@ const configs = {
   AWS_S3_SECRET_KEY: process.env.AWS_S3_SECRET_KEY,
   AWS_S3_BUKET: process.env.AWS_S3_BUKET,
   AWS_S3_REGION: process.env.AWS_S3_REGION,
+  AWS_S3_BUKET_URL: process.env.AWS_S3_BUKET_URL,
 
-  PRIVATE_BANK_API:
-    "https://api.privatbank.ua/p24api/pubinfo?json&exchange&coursid=5",
+  PRIVATE_BANK_API: process.env.PRIVATE_BANK_API,
 };
 
 export { configs };

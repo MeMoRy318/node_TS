@@ -6,6 +6,7 @@ import {
   carMiddleware,
   commonMiddleware,
 } from "../middlewares";
+import { fileMiddleware } from "../middlewares/file.middleware";
 import { CarValidator } from "../validators";
 
 const router = Router();
@@ -42,6 +43,15 @@ router.put(
   authMiddleware.checkAccessToken,
   carMiddleware.getByCarIdAndUserIdOrThrow,
   carController.update,
+);
+
+router.patch(
+  "/photo/:carId",
+  commonMiddleware.isIdValid("carId"),
+  fileMiddleware.uploadAvatar,
+  authMiddleware.checkAccessToken,
+  carMiddleware.getByCarIdAndUserIdOrThrow,
+  carController.updatePhoto,
 );
 
 export { router as carRouter };

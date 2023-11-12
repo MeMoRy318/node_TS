@@ -1,6 +1,7 @@
 import { NextFunction, Request, Response } from "express";
+import { UploadedFile } from "express-fileupload";
 
-import { ICar, IUser } from "../interfaces";
+import { ICar, IQuery, IUser } from "../interfaces";
 import { carPresenter } from "../presenters";
 import { carService } from "../services";
 
@@ -26,8 +27,10 @@ class CarController {
     next: NextFunction,
   ): Promise<void> {
     try {
-      const cars = await carService.getAll();
-      res.status(201).json({ data: cars });
+      const cars = await carService.getAll(req.query as IQuery);
+      res
+        .status(200)
+        .json({ ...cars, data: await carPresenter.presents(cars.data) });
     } catch (e) {
       next(e);
     }
@@ -69,6 +72,21 @@ class CarController {
       const body = req.body;
 
       const car = await carService.update(body, carId);
+      res.status(201).json({ data: await carPresenter.present(car) });
+    } catch (e) {
+      next(e);
+    }
+  }
+  public async updatePhoto(
+    req: Request,
+    res: Response,
+    next: NextFunction,
+  ): Promise<void> {
+    try {
+      const body = req.res.locals.car as ICar;
+      const file = req.files.avatar as UploadedFile;
+
+      const car = await carService.updatePhoto(body, file);
       res.status(201).json({ data: await carPresenter.present(car) });
     } catch (e) {
       next(e);

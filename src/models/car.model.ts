@@ -8,7 +8,10 @@ const schema = new Schema(
     model: {
       type: String,
     },
-
+    photo: {
+      type: String,
+      default: null,
+    },
     year: {
       type: String,
     },
