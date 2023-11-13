@@ -1,6 +1,7 @@
 import { NextFunction, Request, Response } from "express";
 import { UploadedFile } from "express-fileupload";
 
+import { ECarStatus } from "../enums";
 import { ICar, IQuery, IUser } from "../interfaces";
 import { carPresenter } from "../presenters";
 import { carService } from "../services";
@@ -27,7 +28,10 @@ class CarController {
     next: NextFunction,
   ): Promise<void> {
     try {
-      const cars = await carService.getAll(req.query as IQuery);
+      const cars = await carService.getAll(
+        req.query as IQuery,
+        ECarStatus.ACTIVE,
+      );
       res
         .status(200)
         .json({ ...cars, data: await carPresenter.presents(cars.data) });

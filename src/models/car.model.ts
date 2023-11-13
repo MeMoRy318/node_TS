@@ -35,7 +35,7 @@ const schema = new Schema(
 
     status: {
       type: String,
-      default: "inactive",
+      default: "active",
     },
   },
   { versionKey: false, timestamps: true },

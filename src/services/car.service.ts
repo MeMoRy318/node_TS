@@ -1,9 +1,12 @@
 import { UploadedFile } from "express-fileupload";
 import { FilterQuery } from "mongoose";
 
-import { EFileType } from "../enums";
+import { ECarStatus, EFileType } from "../enums";
+import { ApiError } from "../errors";
 import { ICar, IPaginationResponse, IQuery, IUser } from "../interfaces";
 import { carRepository, userRepository } from "../repositories";
+import { badWordsService } from "./bad-words.service";
+import { dayjsService } from "./dayjs.service";
 import { s3Service } from "./s3.service";
 
 class CarService {
@@ -11,12 +14,46 @@ class CarService {
     if (user.status === "buyer") {
       await userRepository.update({ status: "seller" }, String(user._id));
     }
+    const isBadWords = badWordsService.isProfane<ICar>(data);
+    const previousMinutes = dayjsService.previousMinutes(5);
+    const countInactiveCar = await carRepository.getCountCarByData(
+      previousMinutes,
+      String(user._id),
+      ECarStatus.INACTIVE,
+    );
 
+    if (isBadWords && countInactiveCar < 3) {
+      await carRepository.create(
+        // @ts-ignore
+        { ...data, status: ECarStatus.INACTIVE },
+        String(user._id),
+      );
+      throw new ApiError("censored vocabulary edit ad", 400);
+    }
+
+    if (countInactiveCar >= 3) {
+      await Promise.all([
+        carRepository.deleteMany({
+          _userId: user._id,
+          status: ECarStatus.INACTIVE,
+        }),
+        carRepository.create(
+          // @ts-ignore
+          { ...data, status: ECarStatus.BLOCKED },
+          String(user._id),
+        ),
+      ]);
+
+      throw new ApiError("your ad has been blocked", 400);
+    }
     return await carRepository.create(data, String(user._id));
   }
 
-  public async getAll(query: IQuery): Promise<IPaginationResponse<ICar>> {
-    return await carRepository.getAll(query);
+  public async getAll(
+    query: IQuery,
+    status: ECarStatus,
+  ): Promise<IPaginationResponse<ICar>> {
+    return await carRepository.getAll(query, status);
   }
 
   public async delete(carId: string): Promise<boolean> {

@@ -1,20 +1,28 @@
+import { Dayjs } from "dayjs";
 import { FilterQuery } from "mongoose";
 
+import { ECarStatus } from "../enums";
 import { ICar, IPaginationResponse, IQuery } from "../interfaces";
 import { Car } from "../models";
+import { dayjsService } from "../services";
 
 class CarRepository {
   public async create(data: ICar, _userId: string): Promise<ICar> {
     return await Car.create({ ...data, _userId });
   }
 
-  public async getAll(query: IQuery): Promise<IPaginationResponse<ICar>> {
-    const { page = 1, limit = 5, sortedBy, ...searchObj } = query;
+  public async getAll(
+    query: IQuery,
+    status: ECarStatus,
+  ): Promise<IPaginationResponse<ICar>> {
+    const { page = 1, limit = 5, sortedBy, ...obj } = query;
+    const searchObj = { ...obj, status };
     const skip = +limit * (+page - 1);
     const [data, itemsFound] = await Promise.all([
       Car.find(searchObj).skip(+skip).limit(+limit).sort(sortedBy),
       Car.count(searchObj),
     ]);
+
     return { page, limit, itemsFound, data };
   }
 
@@ -37,6 +45,21 @@ class CarRepository {
   }
   public async getCountCarById(userId: string): Promise<number> {
     return await Car.count({ _userId: userId });
+  }
+  public async getCountCarByData(
+    previousTime: Dayjs,
+    userId: string,
+    status: ECarStatus,
+  ): Promise<number> {
+    const currentTime = dayjsService.currentTime();
+    return await Car.count({
+      createdAt: { $gte: previousTime, $lte: currentTime },
+      _userId: userId,
+      status,
+    });
+  }
+  public async deleteMany(data: FilterQuery<ICar>): Promise<void> {
+    await Car.deleteMany(data);
   }
 }
 
