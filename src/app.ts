@@ -9,6 +9,7 @@ import {
   authRouter,
   carRouter,
   managerRouter,
+  premiumRouter,
   userRouter,
 } from "./routers";
 
@@ -23,6 +24,7 @@ app.use("/cars", carRouter);
 app.use("/users", userRouter);
 app.use("/admin", adminRouter);
 app.use("/manager", managerRouter);
+app.use("/premium", premiumRouter);
 
 app.listen(configs.PORT, async () => {
   await mongoose.connect(configs.DB_URL);

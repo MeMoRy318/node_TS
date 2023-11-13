@@ -26,7 +26,9 @@ const schema = new Schema(
     currency: {
       type: String,
     },
-
+    city: {
+      type: String,
+    },
     _userId: {
       type: Types.ObjectId,
       required: true,

@@ -74,6 +74,21 @@ class UserMiddleware {
       next(e);
     }
   }
+  public async isPremiumOrThrow(
+    req: Request,
+    res: Response,
+    next: NextFunction,
+  ): Promise<void> {
+    try {
+      const body = req.res.locals.user as IUser;
+      if (!body.premium) {
+        throw new ApiError("you don't have a premium account", 403);
+      }
+      next();
+    } catch (e) {
+      next(e);
+    }
+  }
 }
 
 const userMiddleware = new UserMiddleware();

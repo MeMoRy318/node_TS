@@ -82,6 +82,13 @@ class CarService {
   public async getCountCarById(userId: string): Promise<number> {
     return await carRepository.getCountCarById(userId);
   }
+
+  public async getAveragePriceByRegion(
+    producer: string,
+    city?: string,
+  ): Promise<number> {
+    return await carRepository.getAveragePriceByRegion(producer, city);
+  }
 }
 
 const carService = new CarService();

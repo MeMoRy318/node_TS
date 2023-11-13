@@ -8,6 +8,7 @@ class CarValidator {
   static producer = joi.string().min(2).max(25).trim().lowercase();
   static price = joi.number().min(1000).max(1000000);
   static currency = joi.valid(...Object.values(ECurrency));
+  static city = joi.string().min(2).max(25).trim().lowercase();
 
   static create = joi.object({
     model: this.model.required(),
@@ -15,6 +16,7 @@ class CarValidator {
     producer: this.producer.required(),
     price: this.price.required(),
     currency: this.currency.required(),
+    city: this.city.required(),
   });
 
   static update = joi.object({
@@ -23,6 +25,7 @@ class CarValidator {
     producer: this.producer,
     price: this.price,
     currency: this.currency,
+    city: this.city,
   });
 }
 

@@ -12,6 +12,7 @@ interface ICar extends Document {
   producer: string;
   price: number;
   photo: string;
+  city: string;
 }
 
 export type { ICar };

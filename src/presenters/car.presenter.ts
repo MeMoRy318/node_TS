@@ -23,6 +23,7 @@ class CarPresenter {
       _userId: data._userId,
       model: data.model,
       photo: data.photo ? configs.AWS_S3_BUKET_URL + data.photo : null,
+      city: data.city,
     };
   }
   public async presents(data: ICar[]): Promise<Partial<ICar[]>> {
@@ -35,6 +36,7 @@ class CarPresenter {
         _id: item._id,
         _userId: item._userId,
         model: item.model,
+        city: item.city,
         price: item.price,
         year: item.year,
         producer: item.producer,

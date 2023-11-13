@@ -58,6 +58,29 @@ class CarRepository {
       status,
     });
   }
+  public async getAveragePriceByRegion(
+    producer: string,
+    city: string,
+  ): Promise<number> {
+    const cityOrAllUkraine = city === "all" ? {} : { city };
+    const [averagePriceByRegion] = await Promise.all([
+      Car.aggregate([
+        {
+          $match: { $and: [{ ...cityOrAllUkraine }, { producer }] },
+        },
+        {
+          $group: {
+            _id: "$city",
+            averagePrice: { $avg: "$price" },
+          },
+        },
+      ]),
+    ]);
+
+    return averagePriceByRegion.length > 0
+      ? averagePriceByRegion[0].averagePrice
+      : 0;
+  }
   public async deleteMany(data: FilterQuery<ICar>): Promise<void> {
     await Car.deleteMany(data);
   }
